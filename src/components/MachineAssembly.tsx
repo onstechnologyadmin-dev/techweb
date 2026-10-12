@@ -24,6 +24,7 @@ export const MachineAssembly: React.FC<MachineAssemblyProps> = ({ onQuoteClick }
     y: 0,
     zoom: 1.0,
   });
+  const [mobileTouchOrbit, setMobileTouchOrbit] = useState<boolean>(false);
   const [webglError, setWebglError] = useState<string | null>(null);
 
   // References for render loop
@@ -230,9 +231,18 @@ export const MachineAssembly: React.FC<MachineAssemblyProps> = ({ onQuoteClick }
 
   // Pointer drag for 360 inspection orbit
   const handlePointerDown = (e: React.PointerEvent) => {
+    // On touch devices, allow natural page scrolling unless 3D touch rotation mode is specifically activated
+    if (e.pointerType === 'touch' && !mobileTouchOrbit) {
+      return;
+    }
+
     isDraggingRef.current = true;
     lastPointerRef.current = { x: e.clientX, y: e.clientY };
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    try {
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
@@ -338,8 +348,7 @@ export const MachineAssembly: React.FC<MachineAssemblyProps> = ({ onQuoteClick }
     <section
       ref={containerRef}
       id="machines"
-      className="relative w-full bg-slate-950 text-white"
-      style={{ minHeight: '480vh' }}
+      className="relative w-full bg-slate-950 text-white min-h-[300vh] md:min-h-[480vh]"
       aria-label="Interactive 3D Machine Assembly Experience"
     >
       {/* Sticky Fullscreen 3D Viewport */}
@@ -351,7 +360,11 @@ export const MachineAssembly: React.FC<MachineAssemblyProps> = ({ onQuoteClick }
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
           onPointerCancel={handlePointerUp}
-          className="w-full h-full block cursor-grab active:cursor-grabbing outline-none touch-none"
+          className={`w-full h-full block outline-none ${
+            mobileTouchOrbit
+              ? 'touch-none cursor-grab active:cursor-grabbing'
+              : 'touch-pan-y cursor-default md:cursor-grab md:active:cursor-grabbing'
+          }`}
           aria-label="3D exploded view of industrial processing machine progressively assembling on scroll"
         />
 
@@ -416,12 +429,26 @@ export const MachineAssembly: React.FC<MachineAssemblyProps> = ({ onQuoteClick }
               </button>
             )}
 
+            {/* Mobile touch rotation toggle */}
+            <button
+              onClick={() => setMobileTouchOrbit((prev) => !prev)}
+              className={`flex md:hidden items-center gap-1.5 px-2.5 py-1.5 text-xs font-mono rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
+                mobileTouchOrbit
+                  ? 'bg-orange-500/20 text-orange-300 border border-orange-400/40'
+                  : 'text-slate-300 hover:text-white bg-slate-800'
+              }`}
+              title="Toggle touch 3D rotation"
+            >
+              <RotateCw className="w-3.5 h-3.5 text-orange-400" />
+              <span>{mobileTouchOrbit ? 'Rotating (Touch)' : 'Touch Rotate'}</span>
+            </button>
+
             <button
               onClick={() => {
                 if (isManualOverride) returnToScrollSync();
                 else setIsManualOverride(true);
               }}
-              className={`flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
+              className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 text-xs font-mono rounded-lg transition-colors whitespace-nowrap cursor-pointer ${
                 isManualOverride
                   ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40'
                   : 'text-slate-300 hover:text-white hover:bg-slate-800'
@@ -504,14 +531,47 @@ export const MachineAssembly: React.FC<MachineAssemblyProps> = ({ onQuoteClick }
           </div>
         )}
 
+        {/* Mobile Active Touch Rotation Banner */}
+        {mobileTouchOrbit && (
+          <div className="absolute top-36 left-1/2 -translate-x-1/2 md:hidden z-30 pointer-events-auto">
+            <div className="flex items-center gap-2 px-3.5 py-2 bg-slate-900/95 border border-orange-500/80 rounded-full text-xs font-mono text-orange-200 shadow-2xl backdrop-blur-md">
+              <span className="w-2 h-2 rounded-full bg-orange-400 animate-pulse" />
+              <span>Touch Rotate Active</span>
+              <button
+                onClick={() => setMobileTouchOrbit(false)}
+                className="ml-2 px-2.5 py-1 bg-gradient-to-r from-cyan-400 to-sky-300 text-slate-950 font-bold rounded-full text-[10px] uppercase tracking-wider hover:opacity-90 transition-opacity cursor-pointer"
+              >
+                Resume Scroll
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Bottom Interactive Navigation / Orbit Hint */}
         <div className="absolute bottom-6 left-6 right-6 md:left-12 md:right-12 pointer-events-none z-10 flex items-center justify-between text-xs text-slate-400">
           <div className="flex items-center gap-2 pointer-events-auto bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-800">
             <Compass className="w-4 h-4 text-cyan-400" />
-            <span className="font-mono text-[11px]">Click & drag 3D model to inspect from 360° angle</span>
+            <span className="font-mono text-[11px] hidden sm:inline">Click & drag 3D model to inspect from 360° angle</span>
+            <span className="font-mono text-[11px] sm:hidden">
+              {mobileTouchOrbit ? 'Drag to rotate 3D view' : 'Swipe down to scroll assembly'}
+            </span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
+            {/* Quick Skip Button on Mobile */}
+            <button
+              onClick={() => {
+                const nextSection = document.getElementById('capabilities');
+                if (nextSection) {
+                  nextSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
+              className="sm:hidden pointer-events-auto px-2.5 py-2 bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-white rounded-xl text-[11px] font-mono flex items-center gap-1 shadow-md cursor-pointer"
+            >
+              <span>Skip 3D</span>
+              <ArrowDown className="w-3.5 h-3.5 text-cyan-400" />
+            </button>
+
             {progressPercent < 95 ? (
               <div className="hidden sm:flex items-center gap-2 text-slate-400 bg-slate-900/90 backdrop-blur-md px-3.5 py-2 rounded-xl border border-slate-800 font-mono text-[11px]">
                 <ArrowDown className="w-3.5 h-3.5 text-cyan-400 animate-bounce" />

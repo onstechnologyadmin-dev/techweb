@@ -8,23 +8,14 @@ interface ContactProps {
   preselectedEquipment?: string;
 }
 
-export const Contact: React.FC<ContactProps> = ({ preselectedEquipment }) => {
+export const Contact: React.FC<ContactProps> = () => {
   const [formData, setFormData] = useState({
     name: '',
     company: '',
     email: '',
     phone: '',
-    industry: 'Pharmaceutical & Medical Devices',
-    equipmentType: preselectedEquipment || 'Turnkey Cleanroom Automated Assembly Line',
-    throughput: '120 - 240 ppm',
     message: '',
   });
-
-  useEffect(() => {
-    if (preselectedEquipment) {
-      setFormData((prev) => ({ ...prev, equipmentType: preselectedEquipment }));
-    }
-  }, [preselectedEquipment]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState<boolean>(false);
@@ -106,9 +97,6 @@ export const Contact: React.FC<ContactProps> = ({ preselectedEquipment }) => {
       company: '',
       email: '',
       phone: '',
-      industry: 'Pharmaceutical & Medical Devices',
-      equipmentType: 'Turnkey Cleanroom Automated Assembly Line',
-      throughput: '120 - 240 ppm',
       message: '',
     });
     setErrors({});
@@ -195,7 +183,7 @@ export const Contact: React.FC<ContactProps> = ({ preselectedEquipment }) => {
                 </h3>
                 <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed mb-6">
                   Thank you, <strong>{formData.name}</strong> from <strong>{formData.company}</strong>. 
-                  Your engineering request for <strong>{formData.equipmentType}</strong> has been assigned to our senior automation bureau.
+                  Your engineering request has been assigned to our senior automation bureau.
                 </p>
                 <button
                   onClick={handleReset}
@@ -292,53 +280,6 @@ export const Contact: React.FC<ContactProps> = ({ preselectedEquipment }) => {
                       </p>
                     )}
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-1.5">
-                      Industry Sector
-                    </label>
-                    <select
-                      value={formData.industry}
-                      onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                      className="w-full px-4 py-2.5 text-sm bg-slate-950 border border-slate-800 rounded-xl text-slate-200 outline-none focus:border-cyan-400"
-                    >
-                      <option value="Pharmaceutical & Medical Devices">Pharmaceutical & Medical Devices</option>
-                      <option value="Cosmetics & Luxury Perfumery">Cosmetics & Luxury Perfumery</option>
-                      <option value="Electronics & Connectors">Electronics & Connectors</option>
-                      <option value="Industrial Hardware & Automotive">Industrial Hardware & Automotive</option>
-                      <option value="Other High-Precision Manufacturing">Other High-Precision Manufacturing</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-1.5">
-                      Desired Throughput Velocity
-                    </label>
-                    <select
-                      value={formData.throughput}
-                      onChange={(e) => setFormData({ ...formData, throughput: e.target.value })}
-                      className="w-full px-4 py-2.5 text-sm bg-slate-950 border border-slate-800 rounded-xl text-slate-200 outline-none focus:border-cyan-400"
-                    >
-                      <option value="Under 60 ppm (Delicate)">Under 60 ppm (Delicate Assembly)</option>
-                      <option value="60 - 180 ppm (Standard Dial)">60 – 180 ppm (Standard Dial)</option>
-                      <option value="180 - 360 ppm (High Speed)">180 – 360 ppm (High Speed)</option>
-                      <option value="360 - 500+ ppm (Continuous)">360 – 500+ ppm (Continuous Kinematic)</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-1.5">
-                    Equipment Configuration or Machine Model
-                  </label>
-                  <input
-                    type="text"
-                    value={formData.equipmentType}
-                    onChange={(e) => setFormData({ ...formData, equipmentType: e.target.value })}
-                    className="w-full px-4 py-2.5 text-sm bg-slate-950 border border-slate-800 rounded-xl text-white outline-none focus:border-cyan-400"
-                  />
                 </div>
 
                 <div>
