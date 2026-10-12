@@ -7,7 +7,7 @@ interface MetricItem {
   targetNum: number;
   suffix: string;
   label: string;
-  sublabel: string;
+  sublabel?: string;
   icon: React.ElementType;
   accent: 'blue' | 'orange' | 'cyan';
 }
@@ -40,7 +40,7 @@ export const RoiMetrics: React.FC = () => {
       targetNum: 650,
       suffix: '+',
       label: 'Machines Installed',
-      sublabel: 'Commissioned across 24 countries worldwide',
+      sublabel: '',
       icon: Award,
       accent: 'cyan',
     },
@@ -195,9 +195,11 @@ export const RoiMetrics: React.FC = () => {
                 <h3 className="text-base font-bold text-slate-200 mb-1 group-hover:text-white transition-colors">
                   {m.label}
                 </h3>
-                <p className="text-xs text-slate-400 leading-relaxed font-normal">
-                  {m.sublabel}
-                </p>
+                {m.sublabel ? (
+                  <p className="text-xs text-slate-400 leading-relaxed font-normal">
+                    {m.sublabel}
+                  </p>
+                ) : null}
 
                 {/* Bottom accent glow bar */}
                 <div className="w-full bg-slate-800 h-1 rounded-full mt-5 overflow-hidden">

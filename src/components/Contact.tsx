@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, Phone, Building, CheckCircle, Send, AlertCircle, ShieldCheck, Clock, FileCode } from 'lucide-react';
 
+const GOOGLE_SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbzpJli31wtDGHGRJKkwxm2fWfv86XV9ynWDs95qgkX3G8-SSF7c7xzUQ1kfOCUzej2_Cg/exec';
+
 interface ContactProps {
   preselectedEquipment?: string;
 }
@@ -59,20 +62,38 @@ export const Contact: React.FC<ContactProps> = ({ preselectedEquipment }) => {
     setSubmitting(true);
 
     try {
-      const response = await fetch('/api/leads', {
+      // 1. Send direct to Google Apps Script Web App (URL-encoded formData for Google Apps Script doPost(e.parameter))
+      try {
+        const urlParams = new URLSearchParams();
+        Object.entries(formData).forEach(([key, val]) => {
+          urlParams.append(key, String(val));
+        });
+        urlParams.append('timestamp', new Date().toISOString());
+
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: urlParams.toString(),
+        }).catch((err) => {
+          console.warn('Direct Google Script submission notification:', err);
+        });
+      } catch (clientErr) {
+        console.warn('Client script trigger notification:', clientErr);
+      }
+
+      // 2. Dispatch to local backend API (handles server-side forwarding and email)
+      await fetch('/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
-      // Even if mock server or static build, handle cleanly
-      if (response.ok) {
-        setSubmitted(true);
-      } else {
-        // Fallback for standalone preview
-        setSubmitted(true);
-      }
+
+      setSubmitted(true);
     } catch {
-      // Allow seamless UX in offline/mock environment
+      // Allow seamless UX
       setSubmitted(true);
     } finally {
       setSubmitting(false);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, ArrowDown, Activity, ShieldCheck, Zap, Cpu, Sparkles, Box } from 'lucide-react';
+import { ArrowRight, ArrowDown, Activity, Sparkles, Box } from 'lucide-react';
 
 interface HeroProps {
   onExploreClick: () => void;
@@ -19,15 +19,6 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onQuoteClick, on3DCl
 
       {/* Hero Container */}
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        {/* Live Telemetry Ticker Strip */}
-        <div className="inline-flex items-center gap-3 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 backdrop-blur-md mb-8 text-xs font-mono">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 radar-live" />
-          <span className="text-cyan-400 font-semibold tracking-wider">SYSTEM ACTIVE</span>
-          <span className="text-slate-600">|</span>
-          <span className="text-slate-300">FIELDBUS: ETHERCAT SYNCHRONIZED</span>
-          <span className="text-slate-600 hidden sm:inline">|</span>
-          <span className="text-orange-400 font-medium hidden sm:inline">CAM DWELL: ±0.015 mm</span>
-        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Column: Core Value Proposition (7 Cols) */}
@@ -78,22 +69,6 @@ export const Hero: React.FC<HeroProps> = ({ onExploreClick, onQuoteClick, on3DCl
                   <span>3D Digital Twin</span>
                 </button>
               )}
-            </div>
-
-            {/* Trust and Certification Indicators */}
-            <div className="flex flex-wrap items-center gap-6 pt-6 border-t border-slate-800/80 text-xs font-mono text-slate-400">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                <span>ISO 14644-1 Class 7 Rated</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Cpu className="w-4 h-4 text-cyan-400" />
-                <span>Siemens & Rockwell GuardLogix</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-orange-400" />
-                <span>Up to 500+ ppm Output</span>
-              </div>
             </div>
           </div>
 

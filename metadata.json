@@ -1,0 +1,8 @@
+{
+  "name": "ONS Technology Automation",
+  "description": "Precision industrial machine automation, robotics, custom rotary dial assembly machines, vibratory parts feeding systems, and cleanroom manufacturing cells.",
+  "requestFrame": "full",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

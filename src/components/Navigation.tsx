@@ -61,7 +61,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onQuoteClick }) => {
               <span className="text-cyan-400 font-mono text-sm">TECHNOLOGY</span>
             </div>
             <div className="text-[10px] font-mono tracking-wider text-slate-400 uppercase">
-              AUTOMATION & ROBOTICS
+              AUTOMATION
             </div>
           </div>
         </a>
