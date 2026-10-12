@@ -56,9 +56,13 @@ export const Contact: React.FC<ContactProps> = () => {
       // 1. Send direct to Google Apps Script Web App (URL-encoded formData for Google Apps Script doPost(e.parameter))
       try {
         const urlParams = new URLSearchParams();
-        Object.entries(formData).forEach(([key, val]) => {
-          urlParams.append(key, String(val));
-        });
+        urlParams.append('name', formData.name.trim());
+        urlParams.append('email', formData.email.trim());
+        urlParams.append('mobile', formData.phone.trim());
+        urlParams.append('phone', formData.phone.trim());
+        urlParams.append('organization', formData.company.trim());
+        urlParams.append('company', formData.company.trim());
+        urlParams.append('message', formData.message.trim());
         urlParams.append('timestamp', new Date().toISOString());
 
         fetch(GOOGLE_SCRIPT_URL, {
@@ -201,6 +205,7 @@ export const Contact: React.FC<ContactProps> = () => {
                     </label>
                     <input
                       type="text"
+                      name="name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       placeholder="e.g. David Vance"
@@ -222,6 +227,7 @@ export const Contact: React.FC<ContactProps> = () => {
                     </label>
                     <input
                       type="text"
+                      name="organization"
                       value={formData.company}
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                       placeholder="e.g. Apex BioTech Manufacturing"
@@ -245,6 +251,7 @@ export const Contact: React.FC<ContactProps> = () => {
                     </label>
                     <input
                       type="email"
+                      name="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       placeholder="d.vance@company.com"
@@ -262,10 +269,11 @@ export const Contact: React.FC<ContactProps> = () => {
 
                   <div>
                     <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider mb-1.5">
-                      Phone Number *
+                      Phone Number / Mobile *
                     </label>
                     <input
                       type="tel"
+                      name="mobile"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       placeholder="+1 (555) 019-2834"
@@ -288,6 +296,7 @@ export const Contact: React.FC<ContactProps> = () => {
                   </label>
                   <textarea
                     rows={4}
+                    name="message"
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Describe component dimensions, feeding requirements, cleanroom rating, test specifications (leak test, vision), or target launch timeline..."

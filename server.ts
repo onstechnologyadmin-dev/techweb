@@ -36,22 +36,21 @@ async function startServer() {
 
     // Forward lead payload to configured Google Apps Script Web App
     try {
-      const gasPayload = {
+      const gasParams = new URLSearchParams({
         name: name.trim(),
-        company: company.trim(),
         email: email.trim(),
+        mobile: phone.trim(),
         phone: phone.trim(),
-        industry: String(industry || '').trim(),
-        equipmentType: String(equipmentType || '').trim(),
-        throughput: String(req.body.throughput || '').trim(),
+        organization: company.trim(),
+        company: company.trim(),
         message: message.trim(),
         timestamp: new Date().toISOString(),
-      };
+      });
 
       fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(gasPayload),
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: gasParams.toString(),
         redirect: 'follow',
       }).catch((err) => console.warn('Google Apps Script forward notice:', err.message));
     } catch (scriptErr) {
